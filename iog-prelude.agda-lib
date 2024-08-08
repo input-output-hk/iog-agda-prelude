@@ -1,0 +1,4 @@
+name: iog-prelude
+depend: standard-library
+include: src
+flags: --erasure

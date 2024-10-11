@@ -2,7 +2,6 @@ module Prelude.Bitmasks where
 
 open import Prelude.Init
 open import Prelude.Lists
-open import Prelude.Default
 
 private variable A : Type
 
@@ -17,5 +16,5 @@ switchOn switchOff : ∀ {xs : List A} → Index xs → Op₁ (Bitmask xs)
 switchOn  i bs = bs V.[ i ]≔ true
 switchOff i bs = bs V.[ i ]≔ false
 
--- set default bits to 0
-instance Default-Bool = Default-Bool-✖
+-- -- set default bits to 0
+-- instance Default-Bool = Default-Bool-✖

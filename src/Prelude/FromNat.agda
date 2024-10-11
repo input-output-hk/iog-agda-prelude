@@ -1,8 +1,8 @@
 module Prelude.FromNat where
 
+open import Class.Decidable
 open import Prelude.Init
 open import Prelude.LiteralSequences
-open import Prelude.Decidable
 
 -- ** dependent version
 record Fromℕ (A : Type) (Can : ℕ → Type) : Type where

@@ -28,8 +28,22 @@
               rm EverythingSafe.agda
             '';
           });
+          agda-stdlib-classes = pkgs.agdaPackages.mkDerivation {
+            pname = "agda-stdlib-classes";
+            version = "2.0";
+            src = pkgs.fetchFromGitHub {
+              repo = "agda-stdlib-classes";
+              owner = "omelkonian";
+              rev = "0c61d92540f0913f24951c88d3d3d4dc15347853";
+              sha256 = "sha256-kTqS9p+jjv34d4JIWV9eWAI8cw9frX/K9DHuwv56AHo=";
+            };
+            meta = { };
+            libraryFile = "agda-stdlib-classes.agda-lib";
+            everythingFile = "standard-library-classes.agda";
+            buildInputs = [ agda-stdlib ];
+          };
           localAgda = pkgs.agda.withPackages (ps: [
-            agda-stdlib
+            agda-stdlib agda-stdlib-classes
           ]);
           iog-prelude = pkgs.agdaPackages.mkDerivation {
             pname = "iog-prelude";

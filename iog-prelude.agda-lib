@@ -1,4 +1,6 @@
 name: iog-prelude
-depend: standard-library
+depend:
+  standard-library
+  standard-library-classes
 include: src
 flags: --erasure

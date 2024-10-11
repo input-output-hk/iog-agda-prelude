@@ -1,11 +1,11 @@
 -- Finite maps as association lists
 module Prelude.AssocList where
 
+open import Class.DecEq
+open import Class.Decidable
+open import Class.Default
 open import Prelude.Init
-open import Prelude.DecEq
-open import Prelude.Decidable
 open import Prelude.Irrelevance
-open import Prelude.Default
 
 AssocList : Type → Type → Type
 AssocList K V = List (K × V)

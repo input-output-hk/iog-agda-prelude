@@ -1,8 +1,8 @@
 module Prelude.Irrelevance where
 
+open import Class.Anyable
+open import Class.Decidable
 open import Prelude.Init
-open import Prelude.Decidable
-open import Prelude.Anyable
 
 ≡-irrelevant : ∀ {A : Type} {x y : A} → Irrelevant (x ≡ y)
 ≡-irrelevant refl refl = refl

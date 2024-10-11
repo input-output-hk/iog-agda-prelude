@@ -1,5 +1,7 @@
 module Everything where
 
+open import Class.Hashable
+
 open import Prelude.AssocList
 open import Prelude.Bitmasks
 open import Prelude.Closures

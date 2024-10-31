@@ -3,4 +3,4 @@ depend:
   standard-library
   standard-library-classes
 include: src
-flags: --erasure
+flags: --safe

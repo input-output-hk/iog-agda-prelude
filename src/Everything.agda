@@ -5,6 +5,7 @@ open import Class.Hashable
 open import Prelude.AssocList
 open import Prelude.Bitmasks
 open import Prelude.Closures
+open import Prelude.Functions
 open import Prelude.FromNat
 open import Prelude.InferenceRules
 open import Prelude.Init

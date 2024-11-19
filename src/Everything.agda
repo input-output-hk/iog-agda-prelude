@@ -1,5 +1,6 @@
 module Everything where
 
+open import Class.Computational
 open import Class.Hashable
 
 open import Prelude.AssocList

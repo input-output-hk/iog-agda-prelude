@@ -155,6 +155,13 @@ open import Algebra.Core public
 ∃! = P.∃! _≡_
   where import Data.Product as P
 
+∃₂-syntax : ∀ {a b c} {A : Set a} {B : Set b}
+     (C : A → B → Set c) → Set _
+∃₂-syntax C = ∃ λ a → ∃ λ b → C a b
+
+infix 2 ∃₂-syntax
+syntax ∃₂-syntax (λ x y → C) = ∃₂[ x , y ] C
+
 -- iff
 _↔_ : Type ℓ → Type ℓ′ → Type (ℓ ⊔ₗ ℓ′)
 A ↔ B = (A → B) × (B → A)

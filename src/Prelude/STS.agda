@@ -130,6 +130,30 @@ module _ {_⊢_—[_]→_ : STS ℕ S I} (let _⊢_—[_]→∗_ = _⊢_—[_]�
                  (p′ ∷ ps) → subst (λ ◆ → _ ⊢ _ , ◆ —[ _ ]→∗ _) (compFun p′ p) ps)
                (decidable (suc n , s′) is)
 
+-- *Reverse* reflexive transitive closure of a state transition system.
+module _ {Γ S I : Type} (_⊢_—[_]→_ : STS Γ S I) where mutual
+
+  private variable
+    γ : Γ
+    s s′ s″ : S
+    i : I
+    is is′ : List I
+
+  private
+    _⊢_—[_]→∗ʳ_ : STS Γ S (List I)
+    _⊢_—[_]→∗ʳ_ = _∗ʳ
+
+  data _∗ʳ : STS Γ S (List I) where
+    [] :
+       ─────────────────
+       γ ⊢ s —[ [] ]→∗ʳ s
+
+    _∷ʳ_ : ∀ { eq : is′ ≡ is L.∷ʳ i } →
+      ∙ γ ⊢ s —[ is ]→∗ʳ s′
+      ∙ γ ⊢ s′ —[ i ]→ s″
+        ───────────────────────
+        γ ⊢ s —[ is′ ]→∗ʳ s″
+
 -- Class of state transition systems.
 record HasTransition (Γ S I : Type) : Type₁ where
   field _⊢_—[_]→_ : STS Γ S I
@@ -139,3 +163,6 @@ open HasTransition ⦃...⦄ public
 
 _⊢_—[_]→∗ⁱ_ : ⦃ HasTransition ℕ S I ⦄ → STS ⊤ (ℕ × S) (List I)
 _⊢_—[_]→∗ⁱ_ = _⊢_—[_]→_ ∗ⁱ
+
+_⊢_—[_]→∗ʳ_ : ⦃ HasTransition Γ S I ⦄ → STS Γ S (List I)
+_⊢_—[_]→∗ʳ_ = _⊢_—[_]→_ ∗ʳ

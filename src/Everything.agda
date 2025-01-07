@@ -4,6 +4,7 @@ open import Class.Computational
 open import Class.Hashable
 
 open import Prelude.AssocList
+open import Prelude.AssocList.Properties
 open import Prelude.Bitmasks
 open import Prelude.Closures
 open import Prelude.Functions

@@ -2,6 +2,8 @@ module Prelude.STS where
 
 open import Prelude.Init
 open import Prelude.InferenceRules
+open import Relation.Binary.Definitions using (Trans; Reflexive)
+open import Relation.Binary.Core using (_⇒_)
 
 -- State transition systems.
 --   ∙ inheriting environment of type Γ
@@ -166,3 +168,12 @@ _⊢_—[_]→∗ⁱ_ = _⊢_—[_]→_ ∗ⁱ
 
 _⊢_—[_]→∗ʳ_ : ⦃ HasTransition Γ S I ⦄ → STS Γ S (List I)
 _⊢_—[_]→∗ʳ_ = _⊢_—[_]→_ ∗ʳ
+
+module _ ⦃ _ : HasTransition Γ S I ⦄ where
+
+  fold : ∀ {ℓ} {γ : Γ} (P : List I → Rel S ℓ) →
+    (∀ {i is} → Trans (_⊢_—[ i ]→_ γ) (P is) (P (i ∷ is))) →
+    Reflexive (P []) →
+    (∀ {is} → _⊢_—[ is ]→∗_ γ ⇒ P is)
+  fold P _⊕_ ∅ []         = ∅
+  fold P _⊕_ ∅ (ts ∷ ts∗) = ts ⊕ fold P _⊕_ ∅ ts∗

@@ -1,7 +1,8 @@
 module Prelude.STS where
 
-open import Prelude.Init
+open import Prelude.Init hiding (map)
 open import Prelude.InferenceRules
+open import Relation.Binary.Core using (_⇒_)
 
 -- State transition systems.
 --   ∙ inheriting environment of type Γ
@@ -166,3 +167,14 @@ _⊢_—[_]→∗ⁱ_ = _⊢_—[_]→_ ∗ⁱ
 
 _⊢_—[_]→∗ʳ_ : ⦃ HasTransition Γ S I ⦄ → STS Γ S (List I)
 _⊢_—[_]→∗ʳ_ = _⊢_—[_]→_ ∗ʳ
+
+module _ ⦃ ht₁ : HasTransition Γ S I ⦄ ⦃ ht₂ : HasTransition Γ S I ⦄ where
+
+  open HasTransition ht₁ renaming (_⊢_—[_]→_ to _⊢_—[_]¹→_; _⊢_—[_]→∗_ to _⊢_—[_]¹→∗_)
+  open HasTransition ht₂ renaming (_⊢_—[_]→_ to _⊢_—[_]²→_; _⊢_—[_]→∗_ to _⊢_—[_]²→∗_)
+
+  map : ∀ {γ : Γ} →
+    (∀ {i}  → _⊢_—[ i  ]¹→_  γ ⇒ _⊢_—[ i  ]²→_  γ) →
+    (∀ {is} → _⊢_—[ is ]¹→∗_ γ ⇒ _⊢_—[ is ]²→∗_ γ)
+  map f [] = []
+  map f (ts ∷ ts∗) = f ts ∷ map f ts∗

@@ -171,6 +171,10 @@ _⊢_—[_]→∗ʳ_ = _⊢_—[_]→_ ∗ʳ
 
 module _ ⦃ _ : HasTransition Γ S I ⦄ where
 
+  -- The type of `fold` establishes an induction rule for STS's,
+  -- namely, if a relation holds both for no steps and for a single
+  -- step, then it holds for arbitrarily many steps using the
+  -- reflexive-transitive closure relation.
   fold : ∀ {ℓ} {γ : Γ} (P : List I → Rel S ℓ) →
     (∀ {i is} → Trans (γ ⊢_—[ i ]→_) (P is) (P (i ∷ is))) →
     Reflexive (P []) →

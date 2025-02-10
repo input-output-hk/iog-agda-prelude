@@ -1,6 +1,6 @@
 module Prelude.STS where
 
-open import Prelude.Init
+open import Prelude.Init hiding (map)
 open import Prelude.InferenceRules
 open import Relation.Binary.Definitions using (Trans; Reflexive)
 open import Relation.Binary.Core using (_⇒_)
@@ -181,3 +181,14 @@ module _ ⦃ _ : HasTransition Γ S I ⦄ where
     (∀ {is} → γ ⊢_—[ is ]→∗_ ⇒ P is)
   fold P _⊕_ ∅ []         = ∅
   fold P _⊕_ ∅ (ts ∷ ts∗) = ts ⊕ fold P _⊕_ ∅ ts∗
+
+module _ ⦃ ht₁ : HasTransition Γ S I ⦄ ⦃ ht₂ : HasTransition Γ S I ⦄ where
+
+  open HasTransition ht₁ renaming (_⊢_—[_]→_ to _⊢_—[_]¹→_; _⊢_—[_]→∗_ to _⊢_—[_]¹→∗_)
+  open HasTransition ht₂ renaming (_⊢_—[_]→_ to _⊢_—[_]²→_; _⊢_—[_]→∗_ to _⊢_—[_]²→∗_)
+
+  map : ∀ {γ : Γ} →
+    (∀ {i}  → _⊢_—[ i  ]¹→_  γ ⇒ _⊢_—[ i  ]²→_  γ) →
+    (∀ {is} → _⊢_—[ is ]¹→∗_ γ ⇒ _⊢_—[ is ]²→∗_ γ)
+  map f [] = []
+  map f (ts ∷ ts∗) = f ts ∷ map f ts∗

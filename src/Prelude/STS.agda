@@ -172,8 +172,8 @@ _⊢_—[_]→∗ʳ_ = _⊢_—[_]→_ ∗ʳ
 module _ ⦃ _ : HasTransition Γ S I ⦄ where
 
   fold : ∀ {ℓ} {γ : Γ} (P : List I → Rel S ℓ) →
-    (∀ {i is} → Trans (_⊢_—[ i ]→_ γ) (P is) (P (i ∷ is))) →
+    (∀ {i is} → Trans (γ ⊢_—[ i ]→_) (P is) (P (i ∷ is))) →
     Reflexive (P []) →
-    (∀ {is} → _⊢_—[ is ]→∗_ γ ⇒ P is)
+    (∀ {is} → γ ⊢_—[ is ]→∗_ ⇒ P is)
   fold P _⊕_ ∅ []         = ∅
   fold P _⊕_ ∅ (ts ∷ ts∗) = ts ⊕ fold P _⊕_ ∅ ts∗

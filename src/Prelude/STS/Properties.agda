@@ -1,11 +1,12 @@
 module Prelude.STS.Properties where
 
-open import Prelude.Init
+open import Prelude.Init hiding (map)
 open import Prelude.STS
+open import Relation.Binary.Core using (_⇒_)
 
 private variable Γ S I : Type
 
-module _ ⦃ _ : HasTransition Γ S I ⦄ where
+module _ ⦃ ht : HasTransition Γ S I ⦄ where
 
   private variable
     γ : Γ
@@ -54,3 +55,41 @@ module _ ⦃ _ : HasTransition Γ S I ⦄ where
   —[]→∗ʳ⇒—[]→∗ : γ ⊢ s —[ is ]→∗ʳ s′ → γ ⊢ s —[ is ]→∗ s′
   —[]→∗ʳ⇒—[]→∗ [] = []
   —[]→∗ʳ⇒—[]→∗ (_∷ʳ_ {eq = eq} ps p) = subst _ (sym eq) (—[∷ʳ]→∗-join (—[]→∗ʳ⇒—[]→∗ ps) p)
+
+  module _ where
+
+    open Map ⦃ ht ⦄ ⦃ ht ⦄
+
+    map-id : ∀ (ts∗ : γ ⊢ s —[ is ]→∗ s″) → map id ts∗ ≡ ts∗
+    map-id []         = refl
+    map-id (ts ∷ ts∗) = cong (_∷_ ts) (map-id ts∗)
+
+module _ ⦃ ht₁ : HasTransition Γ S I ⦄ ⦃ ht₂ : HasTransition Γ S I ⦄ where
+
+  open HasTransition ht₁ renaming (_⊢_—[_]→_ to _⊢_—[_]¹→_; _⊢_—[_]→∗_ to _⊢_—[_]¹→∗_)
+  open HasTransition ht₂ renaming (_⊢_—[_]→_ to _⊢_—[_]²→_; _⊢_—[_]→∗_ to _⊢_—[_]²→∗_)
+  open Map ⦃ ht₁ ⦄ ⦃ ht₂ ⦄
+  open import Relation.Binary.PropositionalEquality using (cong₂)
+
+  map-cong : ∀ {γ}
+    (f : ∀ {i} → γ ⊢_—[ i ]¹→_ ⇒ γ ⊢_—[ i ]²→_) →
+    (g : ∀ {i} → γ ⊢_—[ i ]¹→_ ⇒ γ ⊢_—[ i ]²→_) →
+    (∀ {i s s″} (ts : γ ⊢ s —[ i ]¹→ s″) → f ts ≡ g ts) →
+    ∀ {is s s″} (ts∗ : γ ⊢ s —[ is ]¹→∗ s″) →
+    map f ts∗ ≡ map g ts∗
+  map-cong f g eq []         = refl
+  map-cong f g eq (ts ∷ ts∗) = cong₂ _∷_ (eq ts) (map-cong f g eq ts∗)
+
+  module _ ⦃ ht₃ : HasTransition Γ S I ⦄ where
+
+    open HasTransition ht₃ renaming (_⊢_—[_]→_ to _⊢_—[_]³→_; _⊢_—[_]→∗_ to _⊢_—[_]³→∗_)
+    open Map ⦃ ht₂ ⦄ ⦃ ht₃ ⦄ renaming (map to map′)
+    open Map ⦃ ht₁ ⦄ ⦃ ht₃ ⦄ renaming (map to map″)
+
+    map-∘ : ∀ {γ : Γ} {s s″ : S} {is : List I}
+      (f : ∀ {i} → γ ⊢_—[ i ]²→_ ⇒ γ ⊢_—[ i ]³→_)
+      (g : ∀ {i} → γ ⊢_—[ i ]¹→_ ⇒ γ ⊢_—[ i ]²→_)
+      (ts∗ : γ ⊢ s —[ is ]¹→∗ s″) →
+      (map′ f ∘ map g) ts∗ ≡ map″ (f ∘ g) ts∗
+    map-∘ f g []         = refl
+    map-∘ f g (ts ∷ ts∗) = cong (_∷_ (f (g ts))) (map-∘ f g ts∗)

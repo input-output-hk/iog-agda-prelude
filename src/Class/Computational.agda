@@ -12,6 +12,8 @@ open import Class.Bifunctor
 open import Class.DecEq
 open import Class.Functor renaming (fmap to map)
 open import Class.Monad
+open import Class.Semigroup
+open import Class.Show.Core
 open import Function
 open import Relation.Binary.PropositionalEquality
 

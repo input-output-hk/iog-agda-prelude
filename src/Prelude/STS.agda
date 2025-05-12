@@ -1,7 +1,6 @@
 module Prelude.STS where
 
 open import Prelude.Init hiding (map)
-open import Prelude.InferenceRules
 open import Relation.Binary.Definitions using (Trans; Reflexive)
 open import Relation.Binary.Core using (_⇒_)
 
@@ -32,10 +31,10 @@ record Computational (_⊢_—[_]→_ : STS Γ S I) : Type₁ where
   ... | yes (s′ , _) = just s′
 
   -- From functionality, we can prove that the decision procedure is sound *and complete*.
-  completeness : ∀ {γ} s i s′ →
-    γ ⊢ s —[ i ]→ s′
-    ─────────────────────────
-    compute {γ} s i ≡ just s′
+  completeness : ∀ {γ} s i s′
+    → γ ⊢ s —[ i ]→ s′
+    ---------------------------
+    → compute {γ} s i ≡ just s′
   completeness {γ} s i s′ s→
     with decidable {γ} s i
   ... | no ¬s→ = ⊥-elim $ ¬s→ (-, s→)
@@ -57,14 +56,14 @@ module _ {Γ S I : Type} (_⊢_—[_]→_ : STS Γ S I) where mutual
 
   data _∗ : STS Γ S (List I) where
     [] :
-        ─────────────────
+        -----------------
         γ ⊢ s —[ [] ]→∗ s
 
     _∷_ :
-      ∙ γ ⊢ s  —[ i ]→ s′
-      ∙ γ ⊢ s′ —[ is ]→∗ s″
-        ───────────────────────
-        γ ⊢ s  —[ i ∷ is ]→∗ s″
+        γ ⊢ s  —[ i ]→ s′
+      → γ ⊢ s′ —[ is ]→∗ s″
+      -------------------------
+      → γ ⊢ s  —[ i ∷ is ]→∗ s″
 
 module _ {_⊢_—[_]→_ : STS Γ S I} (let _⊢_—[_]→∗_ = _⊢_—[_]→_ ∗) where instance
   Computational∗ : ⦃ Computational _⊢_—[_]→_ ⦄ → Computational _⊢_—[_]→∗_
@@ -102,14 +101,14 @@ module _ {S I : Type} (_⊢_—[_]→_ : STS ℕ S I) where mutual
 
   data _∗ⁱ : STS ⊤ (ℕ × S) (List I) where
     [] :
-        ───────────────────
+        -------------------
         _ ⊢ sⁱ —[ [] ]→∗ sⁱ
 
     _∷_ :
-      ∙ n ⊢ s  —[ i ]→ s′
-      ∙ _ ⊢ (suc n , s′) —[ is ]→∗ sⁱ
-        ─────────────────────────────
-        _ ⊢ (n , s)  —[ i ∷ is ]→∗ sⁱ
+        n ⊢ s  —[ i ]→ s′
+      → _ ⊢ (suc n , s′) —[ is ]→∗ sⁱ
+      -------------------------------
+      → _ ⊢ (n , s)  —[ i ∷ is ]→∗ sⁱ
 
 module _ {_⊢_—[_]→_ : STS ℕ S I} (let _⊢_—[_]→∗_ = _⊢_—[_]→_ ∗ⁱ) where instance
   Computational∗ⁱ : ⦃ Computational _⊢_—[_]→_ ⦄ → Computational _⊢_—[_]→∗_
@@ -147,14 +146,14 @@ module _ {Γ S I : Type} (_⊢_—[_]→_ : STS Γ S I) where mutual
 
   data _∗ʳ : STS Γ S (List I) where
     [] :
-       ─────────────────
+       ------------------
        γ ⊢ s —[ [] ]→∗ʳ s
 
     _∷ʳ_ : ∀ { eq : is′ ≡ is L.∷ʳ i } →
-      ∙ γ ⊢ s —[ is ]→∗ʳ s′
-      ∙ γ ⊢ s′ —[ i ]→ s″
-        ───────────────────────
-        γ ⊢ s —[ is′ ]→∗ʳ s″
+        γ ⊢ s —[ is ]→∗ʳ s′
+      → γ ⊢ s′ —[ i ]→ s″
+        --------------------
+      → γ ⊢ s —[ is′ ]→∗ʳ s″
 
 -- Class of state transition systems.
 record HasTransition (Γ S I : Type) : Type₁ where

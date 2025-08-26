@@ -2,5 +2,6 @@ name: iog-prelude
 depend:
   standard-library
   standard-library-classes
+  standard-library-meta
 include: src
 flags: --safe

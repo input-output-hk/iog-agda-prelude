@@ -15,3 +15,4 @@ open import Prelude.Irrelevance
 open import Prelude.Lists
 open import Prelude.LiteralSequences
 open import Prelude.STS
+open import Prelude.STS.GenPremises

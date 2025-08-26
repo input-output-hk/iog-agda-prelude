@@ -148,6 +148,8 @@ open import Relation.Binary.PropositionalEquality public
 open import Algebra.Core public
   using (Op₁; Op₂)
 
+open import Class.Decidable
+
 -- ** extras
 
 -- uniquely exists
@@ -161,6 +163,9 @@ open import Algebra.Core public
 
 infix 2 ∃₂-syntax
 syntax ∃₂-syntax (λ x y → C) = ∃₂[ x , y ] C
+
+∃⁇ : ∀ {ℓ} → Set (lsuc ℓ)
+∃⁇ {ℓ} = Σ (Set ℓ) _⁇
 
 -- iff
 _↔_ : Type ℓ → Type ℓ′ → Type (ℓ ⊔ₗ ℓ′)

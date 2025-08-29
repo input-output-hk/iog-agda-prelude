@@ -1,6 +1,6 @@
 name: iog-prelude
 depend:
-  standard-library
+  standard-library-2.3
   standard-library-classes
   standard-library-meta
 include: src

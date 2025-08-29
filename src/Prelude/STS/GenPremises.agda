@@ -1,5 +1,5 @@
 {-# OPTIONS --safe #-}
-{-# OPTIONS -v tactic.premises:100 #-}
+-- {-# OPTIONS -v tactic.premises:100 #-}
 module Prelude.STS.GenPremises where
 
 -- FIXME: upstream this
@@ -361,7 +361,9 @@ genPremises f n = do
 
   -- (5) bundle the (decidable) hypotheses back together in a single product
   bundleHypotheses : List Type → Type
-  bundleHypotheses = fold where instance _ = Monoid-Term-×; _ = Semigroup-Term-×
+  bundleHypotheses []       = quote ⊤ ∙
+  bundleHypotheses (x ∷ []) = x
+  bundleHypotheses (x ∷ xs) = quote _×_ ∙⟦ x ∣ bundleHypotheses xs ⟧
 
   -- (6) minimize the implicit arguments to only the ones that are actually used in (5)
   removeUnusedImplicits : AbsTelescope → Type → TC (AbsTelescope × Type)
@@ -401,12 +403,12 @@ private
     _ : ℝ-base-premises .proj₂ .dec ≡ yes tt
     _ = refl
 
-    -- module _ (n m : ℕ) (𝕣 : ℝ n m) where
-    --   _ : ℝ-step-premises .proj₁
-    --   _ = 𝕣
+    module _ (n m : ℕ) (𝕣 : ℝ n m) where
+      _ : ℝ-step-premises .proj₁
+      _ = 𝕣
 
-    --   _ : (ℝ n m) ⁇
-    --   _ = ℝ-step-premises .proj₂
+      _ : (ℝ n m) ⁇
+      _ = ℝ-step-premises .proj₂
 
   open import Class.Monoid
 
@@ -429,9 +431,9 @@ private
     _ : ℚ-base-premises .proj₁
     _ = tt
 
-    -- module _ {A} ⦃ _ : Semigroup A ⦄ ⦃ _ : Monoid A ⦄ (n m n′ m′ : A) (𝕢ˡ : ℚ n m) (𝕢ʳ : ℚ n′ m′) where
-    --   _ : ℚ-step-premises .proj₁
-    --   _ = 𝕢ˡ , 𝕢ʳ
+    module _ {A} ⦃ _ : Semigroup A ⦄ ⦃ _ : Monoid A ⦄ (n m n′ m′ : A) (𝕢ˡ : ℚ n m) (𝕢ʳ : ℚ n′ m′) where
+      _ : ℚ-step-premises .proj₁
+      _ = 𝕢ˡ , 𝕢ʳ
 
   -- * The tactic omits *undecidable* hypotheses.
   data ℝ′ : ℕ → ℕ → Set where
@@ -454,7 +456,7 @@ private
 
     module _ (n m : ℕ) (𝕣 : ℝ′ n m) where
       _ : ℝ′-step-premises .proj₁
-      _ = 𝕣 , tt
+      _ = 𝕣
 
   -- * The tactic works under module contexts.
   module _ {A} ⦃ _ : Semigroup A ⦄ ⦃ _ : Monoid A ⦄ ⦃ _ : ℚ {A} ⁇² ⦄ ⦃ _ : ℝ ⁇² ⦄ where
@@ -480,7 +482,7 @@ private
 
     module _ (n n′ : ℕ) (x y : A) (𝕣 : ℝ n n′) (𝕢 : ℚ x y) where
       _ : 𝕎-step-premises .proj₁
-      _ = 𝕣 , 𝕢 , tt
+      _ = 𝕣 , 𝕢
 
   -- * Irrelevant free variable `z` is not included in the premise type,
   --   since it only appears in the conclusion.
@@ -505,7 +507,7 @@ private
     module _ {A} ⦃ _ : Semigroup A ⦄ ⦃ _ : Monoid A ⦄
              (n m n′ m′ : A) (𝕢ˡ : 𝕍 n m) (𝕢ʳ : 𝕍 n′ m′) where
       _ : 𝕍-step-premises .proj₁
-      _ = 𝕢ˡ , 𝕢ʳ , tt
+      _ = 𝕢ˡ , 𝕢ʳ
 
   -- * Irrelevant free variable `T` is not included in the premise type,
   --   since it only appears in an undecidable hypothesis.
@@ -531,7 +533,7 @@ private
     module _ {A} ⦃ _ : Semigroup A ⦄ ⦃ _ : Monoid A ⦄
              (n m n′ m′ : A) (𝕢ˡ : 𝕍′ n m) (𝕢ʳ : 𝕍′ n′ m′) where
       _ : 𝕍′-step-premises .proj₁
-      _ = 𝕢ˡ , 𝕢ˡ , tt
+      _ = 𝕢ˡ , 𝕢ˡ
 
   -- * Irrelevant instance `⦃ Show A ⦄` is not included in the premise type.
   data ℚ′ {A : Set} ⦃ _ : Semigroup A ⦄ ⦃ _ : Monoid A ⦄ : A → A → Set where
@@ -555,4 +557,4 @@ private
     module _ {A} ⦃ _ : Semigroup A ⦄ ⦃ _ : Monoid A ⦄
              (n m n′ m′ : A) (𝕢ˡ : ℚ′ n m) (𝕢ʳ : ℚ′ n′ m′) where
       _ : ℚ′-step-premises .proj₁
-      _ = 𝕢ˡ , 𝕢ʳ , tt
+      _ = 𝕢ˡ , 𝕢ʳ

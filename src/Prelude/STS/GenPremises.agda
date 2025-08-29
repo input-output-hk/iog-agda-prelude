@@ -141,20 +141,6 @@ showAbsTel = show ⦃ Show-Tel ⦄ ∘ absTelescope
 hasInstance : Type → TC Bool
 hasInstance = isSuccessful ∘ checkType (quote it ∙)
 
--- ** Monoidal structure of terms.
-
-open import Class.Semigroup.Core
-open import Class.Monoid.Core
-
-Semigroup-Term-× = Semigroup Term ∋ λ where ._◇_ → quote _×_ ∙⟦_∣_⟧
-Semigroup-Term-⊎ = Semigroup Term ∋ λ where ._◇_ → quote _⊎_ ∙⟦_∣_⟧
-
-Monoid-Term-× = Monoid Term ∋ λ where .ε → quote ⊤ ∙
-  where instance _ = Semigroup-Term-×
-Monoid-Term-⊎ = Monoid Term ∋ λ where .ε → quote ⊥ ∙
-  where instance _ = Semigroup-Term-⊎
-
-
 {-
 ** Extracting the hypotheses of an STS rule.
 

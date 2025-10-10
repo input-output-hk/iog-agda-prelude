@@ -31,13 +31,17 @@
       ...
     }:
     let
-      overlay = final: prev: {
-        agdaPackages = prev.agdaPackages.overrideScope (
-          afinal: aprev: {
-            iog-prelude = afinal.callPackage ./nix/iog-prelude.nix { };
-          }
-        );
-      };
+      overlay = nixpkgs.lib.composeManyExtensions [
+        inputs.standard-library-classes.overlays.default
+        inputs.standard-library-meta.overlays.default
+        (final: prev: {
+          agdaPackages = prev.agdaPackages.overrideScope (
+            afinal: aprev: {
+              iog-prelude = afinal.callPackage ./nix/iog-prelude.nix { };
+            }
+          );
+        })
+      ];
     in
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -46,8 +50,6 @@
           inherit system;
           overlays = [
             inputs.shellFor.overlays.default
-            inputs.standard-library-classes.overlays.default
-            inputs.standard-library-meta.overlays.default
             overlay
           ];
         };

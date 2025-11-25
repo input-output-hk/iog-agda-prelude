@@ -138,9 +138,10 @@ open import Relation.Nullary.Negation public
   using (contradiction; contraposition)
 open import Relation.Unary public
   using (Pred)
-  renaming (Decidable to Decidable¹; Irrelevant to Irrelevant¹)
+  renaming (Decidable to Decidable¹; Irrelevant to Irrelevant¹
+           ; _⊆_ to _⊆¹_; _∩_ to _∩¹_)
 open import Relation.Binary public
-  using (Rel; REL; DecidableEquality; Transitive)
+  using (Rel; REL; DecidableEquality; Transitive; Reflexive)
   renaming (Decidable to Decidable²; Irrelevant to Irrelevant²)
 open import Relation.Binary.PropositionalEquality public
   using (_≡_; _≢_; refl; cong; subst; sym; module ≡-Reasoning)

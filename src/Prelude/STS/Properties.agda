@@ -56,6 +56,43 @@ module _ ⦃ ht : HasTransition Γ S I ⦄ where
   —[]→∗ʳ⇒—[]→∗ [] = []
   —[]→∗ʳ⇒—[]→∗ (_∷ʳ_ {eq = eq} ps p) = subst _ (sym eq) (—[∷ʳ]→∗-join (—[]→∗ʳ⇒—[]→∗ ps) p)
 
+  module _
+    ⦃ _ : Computational _⊢_—[_]→_ ⦄
+    (let compute∗      = Computational.compute      Computational∗
+         decidable∗    = Computational.decidable    Computational∗
+         completeness∗ = Computational.completeness Computational∗)
+    where
+
+    -- An equivalent version of `compute` for the reflexive-transitive closure
+    compute∗′ : {γ : Γ} → S → List I → Maybe S
+    compute∗′     s []       = just s
+    compute∗′ {γ} s (i ∷ is) with compute {_⊢_—[_]→_ = _⊢_—[_]→_} {γ} s i
+    ... | just s′ = compute∗′ {γ} s′ is
+    ... | nothing = nothing
+
+    compute∗′≡compute∗ : ∀ (s : S) (is : List I) → compute∗′ {γ} s is ≡ compute∗ {γ} s is
+    compute∗′≡compute∗ {γ} s []       = refl
+    compute∗′≡compute∗ {γ} s (i ∷ is) with compDec {γ = γ} s i
+    ... | no _ = refl
+    ... | yes (s′ , _) with decidable∗ {γ} s′ is
+    ...   | yes (_ , π) rewrite compute∗′≡compute∗ {γ} s′ is | completeness∗ _ _ _ π            = refl
+    ...   | no ¬π       rewrite compute∗′≡compute∗ {γ} s′ is | dec-no (decidable∗ {γ} s′ is) ¬π = refl
+
+  -- A left-total STS and its reflexive-transitive closure are always decidable
+  LeftTotal : {A : Type ℓ} {B : Type ℓ′} (R : REL A B ℓ″) → Type (ℓ ⊔ₗ ℓ′ ⊔ₗ ℓ″)
+  LeftTotal R = ∀ x → ∃[ y ] R x y
+
+  module _ (left-total : ∀ (i : I) → LeftTotal (γ ⊢_—[ i ]→_)) where
+    left-total⇒decidable : ∀ (i : I) (s : S) → Dec $ ∃ (γ ⊢ s —[ i ]→_)
+    left-total⇒decidable = yes ∘₂ left-total
+
+    ∗-left-total : ∀ (is : List I) → LeftTotal (γ ⊢_—[ is ]→∗_)
+    ∗-left-total []       s = s , []
+    ∗-left-total (i ∷ is) s =
+      let (s′ , π′) = left-total i s
+          (s″ , π″) = ∗-left-total is s′
+      in  s″ , π′ ∷ π″
+
   module _ where
 
     open Map ⦃ ht ⦄ ⦃ ht ⦄

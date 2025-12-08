@@ -58,7 +58,7 @@ module _ ⦃ ht : HasTransition Γ S I ⦄ where
 
   module _
     ⦃ _ : Computational _⊢_—[_]→_ ⦄
-    (let open Computational Computational∗ renaming (compute to compute∗; decidable to decidable∗; completeness to completeness∗)
+    (let open Computational Computational∗ renaming (compute to compute∗; decidable to decidable∗; completeness to completeness∗))
     where
 
     -- An equivalent version of `compute` for the reflexive-transitive closure

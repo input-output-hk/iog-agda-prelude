@@ -58,9 +58,7 @@ module _ ⦃ ht : HasTransition Γ S I ⦄ where
 
   module _
     ⦃ _ : Computational _⊢_—[_]→_ ⦄
-    (let compute∗      = Computational.compute      Computational∗
-         decidable∗    = Computational.decidable    Computational∗
-         completeness∗ = Computational.completeness Computational∗)
+    (let open Computational Computational∗ renaming (compute to compute∗; decidable to decidable∗; completeness to completeness∗)
     where
 
     -- An equivalent version of `compute` for the reflexive-transitive closure

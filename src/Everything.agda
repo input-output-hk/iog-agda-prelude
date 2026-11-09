@@ -16,3 +16,4 @@ open import Prelude.Lists
 open import Prelude.LiteralSequences
 open import Prelude.STS
 open import Prelude.STS.GenPremises
+open import Prelude.STS.Properties
